@@ -1,0 +1,150 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+if (!rootProject.optimizeForDevelopment) {
+    apply from: '../gradle/plugins/checkstyle-android.gradle'
+    apply from: '../gradle/plugins/findbugs-android.gradle'
+}
+
+if (rootProject.testCoverage) {
+    apply plugin: 'jacoco'
+}
+
+//noinspection GroovyAssignabilityCheck
+configurations.all {
+    resolutionStrategy {
+        force "com.android.support:support-annotations:${androidSupportLibraryVersion}"
+    }
+}
+
+dependencies {
+    implementation project(':k9mail-library')
+    implementation project(':plugins:HoloColorPicker')
+    implementation project(':plugins:openpgp-api-lib:openpgp-api')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:${kotlinVersion}"
+    implementation "com.squareup.okio:okio:${okioVersion}"
+    implementation 'commons-io:commons-io:2.4'
+    implementation "com.android.support:support-v4:${androidSupportLibraryVersion}"
+    implementation "com.android.support:appcompat-v7:${androidSupportLibraryVersion}"
+    implementation "com.android.support:recyclerview-v7:${androidSupportLibraryVersion}"
+    implementation "android.arch.lifecycle:extensions:1.1.0"
+    implementation 'org.jsoup:jsoup:1.11.2'
+    implementation 'de.cketti.library.changelog:ckchangelog:1.2.1'
+    implementation 'com.github.bumptech.glide:glide:3.6.1'
+    implementation 'com.splitwise:tokenautocomplete:2.0.7'
+    implementation 'de.cketti.safecontentresolver:safe-content-resolver-v14:0.9.0'
+    implementation 'com.github.amlcurran.showcaseview:library:5.4.1'
+    implementation 'com.squareup.moshi:moshi:1.2.0'
+    implementation "com.jakewharton.timber:timber:${timberVersion}"
+    implementation 'net.jcip:jcip-annotations:1.0'
+    implementation 'org.apache.james:apache-mime4j-core:0.8.1'
+    implementation 'com.xwray:groupie:2.0.3'
+    implementation 'com.xwray:groupie-kotlin-android-extensions:2.0.3'
+    implementation "org.jetbrains.anko:anko-coroutines:0.10.4"
+    implementation "org.koin:koin-android-architecture:${koinVersion}"
+
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
+    testImplementation "org.robolectric:robolectric:${robolectricVersion}"
+    testImplementation "junit:junit:${junitVersion}"
+    testImplementation "com.google.truth:truth:${truthVersion}"
+    testImplementation "org.mockito:mockito-core:${mockitoVersion}"
+    testImplementation "com.nhaarman:mockito-kotlin:1.5.0"
+    testImplementation "org.jdom:jdom2:2.0.6"
+    testImplementation "org.koin:koin-test:${koinVersion}"
+}
+
+android {
+    compileSdkVersion androidCompileSdkVersion.toInteger()
+    buildToolsVersion androidBuildToolsVersion
+
+    defaultConfig {
+        applicationId "com.fsck.k9"
+        testApplicationId "com.fsck.k9.tests"
+
+        versionCode 27000
+        versionName '5.700-SNAPSHOT'
+
+        minSdkVersion 15
+        targetSdkVersion 22
+
+        generatedDensities = ['mdpi', 'hdpi', 'xhdpi']
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        release
+    }
+
+    buildTypes {
+        release {
+            if (project.hasProperty('storeFile')) {
+                signingConfig signingConfigs.release
+            }
+
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            buildConfigField "boolean", "DEVELOPER_MODE", "false"
+        }
+
+        debug {
+            applicationIdSuffix ".debug"
+            testCoverageEnabled rootProject.testCoverage
+
+            buildConfigField "boolean", "DEVELOPER_MODE", "true"
+        }
+    }
+
+    // Do not abort build if lint finds errors
+    lintOptions {
+        abortOnError false
+        lintConfig file("$rootProject.projectDir/config/lint/lint.xml")
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/README'
+        exclude 'LICENSE.txt'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+}
+
+androidExtensions {
+    experimental = true
+}
+
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}
+
+if (project.hasProperty('keyAlias')) {
+    android.signingConfigs.release.keyAlias = keyAlias
+}
+if (project.hasProperty('keyPassword')) {
+    android.signingConfigs.release.keyPassword = keyPassword
+}
+if (project.hasProperty('storeFile')) {
+    android.signingConfigs.release.storeFile = file(storeFile)
+}
+if (project.hasProperty('storePassword')) {
+    android.signingConfigs.release.storePassword = storePassword
+}

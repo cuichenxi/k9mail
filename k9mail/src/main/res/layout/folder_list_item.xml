@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/folder_list_item_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:minHeight="48dp"
+    android:orientation="horizontal"
+    android:paddingRight="4dip">
+
+    <View
+        android:id="@+id/chip"
+        android:layout_width="8dip"
+        android:layout_height="match_parent"
+        android:layout_marginRight="8dip"
+        android:background="#ff336699" />
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingBottom="2dip"
+        android:paddingLeft="6dip">
+
+        <TextView
+            android:id="@+id/folder_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="16dp" />
+
+        <TextView
+            android:id="@+id/folder_status"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="?android:attr/textColorTertiary"
+            android:textSize="11dp" />
+
+    </LinearLayout>
+
+    <include layout="@layout/accounts_folders_icons" />
+</LinearLayout>

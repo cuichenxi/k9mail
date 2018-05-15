@@ -275,10 +275,10 @@ public class FolderList extends K9ListActivity {
             return;
         }
 
-        ChangeLog cl = new ChangeLog(this);
-        if (cl.isFirstRun()) {
-            cl.getLogDialog().show();
-        }
+//        ChangeLog cl = new ChangeLog(this);
+//        if (cl.isFirstRun()) {
+//            cl.getLogDialog().show();
+//        }
     }
 
     @SuppressLint("InflateParams")
@@ -965,7 +965,7 @@ public class FolderList extends K9ListActivity {
                 holder.folderStatus.setText(folderStatus);
                 holder.folderStatus.setVisibility(View.VISIBLE);
             } else {
-                holder.folderStatus.setVisibility(View.GONE);
+//                holder.folderStatus.setVisibility(View.GONE);
             }
 
             if(folder.unreadMessageCount == -1) {

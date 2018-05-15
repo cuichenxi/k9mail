@@ -429,10 +429,7 @@ public class AccountSetupBasics extends K9Activity
                 break;
             case R.id.manual_setup:
                 onManualSetup();
-//                Account account = MailAccountUtil.getInstance(this).genAccount("chenxi.cui@ucarinc.com", "chenxi.1234");
-//                Log.v("xxxxxx", "store:" + account.getStoreUri());
-//                Log.v("xxxxxx", "TranStore:" + account.getTransportUri());
-                break;
+               break;
         }
     }
 

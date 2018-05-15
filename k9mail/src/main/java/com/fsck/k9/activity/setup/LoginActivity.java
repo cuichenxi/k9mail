@@ -10,10 +10,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fsck.k9.Account;
 import com.fsck.k9.K9;
@@ -26,6 +28,7 @@ import com.fsck.k9.activity.setup.AccountSetupCheckSettings.CheckDirection;
 import com.fsck.k9.controller.MessagingController;
 import com.fsck.k9.fragment.ConfirmationDialogFragment;
 import com.fsck.k9.fragment.ConfirmationDialogFragment.ConfirmationDialogFragmentListener;
+import com.fsck.k9.helper.MailClient;
 import com.fsck.k9.mail.AuthenticationFailedException;
 import com.fsck.k9.mail.CertificateValidationException;
 import com.fsck.k9.mail.Folder.FolderClass;
@@ -89,9 +92,9 @@ public class LoginActivity extends K9Activity implements OnClickListener,
         mProgressBar = (ProgressBar) findViewById(R.id.progress);
         findViewById(R.id.cancel).setOnClickListener(this);
         findViewById(R.id.next).setOnClickListener(this);
-        setMessage(R.string.account_setup_check_settings_retr_info_msg);
-        mProgressBar.setIndeterminate(true);
-        mAccount = MailAccountUtil.getInstance(this).genAccount("chenxi.cui@ucarinc.com", "chenxi.1234");
+//        setMessage(R.string.account_setup_check_settings_retr_info_msg);
+//        mProgressBar.setIndeterminate(true);
+        mAccount = MailAccountUtil.getInstance(this).genAccount("cxx", "cxx");
         mDirection = CheckDirection.INCOMING;
     }
 
@@ -351,7 +354,26 @@ public class LoginActivity extends K9Activity implements OnClickListener,
                 onCancel();
                 break;
             case R.id.next:
-                login();
+//                login();
+                setMessage(R.string.account_setup_check_settings_retr_info_msg);
+                mProgressBar.setIndeterminate(true);
+                new MailClient(this, mAccount).sysLogin(new MailClient.MailListener() {
+                    @Override
+                    public void result(final int code, final String msg) {
+                        mProgressBar.setIndeterminate(false);
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (code == 0) {
+                                    Accounts.listAccounts(LoginActivity.this);
+                                    finish();
+                                } else {
+                                    Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
+                    }
+                });
                 break;
         }
     }
